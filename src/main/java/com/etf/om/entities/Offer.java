@@ -1,6 +1,7 @@
 package com.etf.om.entities;
 
 import com.etf.om.enums.OfferApprovalLevels;
+import com.etf.om.enums.OfferApprovalStatus;
 import com.etf.om.enums.OfferStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,9 +21,10 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Offer {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    private UUID id;
 
     @Column(nullable = false, length = 20)
     private String name;
@@ -31,16 +33,16 @@ public class Offer {
     @Column(nullable = false, length = 20)
     private OfferStatus status;
 
-    @Column(nullable = false, name = "approval_description", columnDefinition = "TEXT")
+    @Column(name = "approval_description", columnDefinition = "TEXT")
     private String approvalDescription;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, name = "approval_level")
+    @Column(name = "approval_level")
     private OfferApprovalLevels approvalLevel;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, name = "approval_status")
-    private OfferApprovalLevels approvalStatus;
+    private OfferApprovalStatus approvalStatus;
 
     @Column(name = "created_by_username", nullable = false, updatable = false)
     private String createdByUsername;
@@ -55,7 +57,4 @@ public class Offer {
     @UpdateTimestamp
     @Column(name = "date_modified")
     private Instant dateModified;
-
-    @Column(name = "deleted")
-    private Boolean deleted = false;
 }

@@ -23,14 +23,11 @@ public class TariffPlanDiscounts {
     @GeneratedValue
     private UUID id;
 
-    @Column(nullable = false)
-    private BigDecimal discount;
+    @Column(nullable = false, name="initial_discount")
+    private BigDecimal initialDiscount;
 
-    @Column(nullable = false, name="min_amount_of_tariff_plans")
-    private Integer minAmountOfTariffPlans;
-
-    @Column(nullable = false, name="max_amount_of_tariff_plans")
-    private Integer maxAmountOfTariffPlans;
+    @Column(nullable = false, name="additional_discount")
+    private BigDecimal additionalDiscount =  BigDecimal.ZERO;
 
     @ManyToOne
     @JoinColumn(name = "tariff_plan_id", updatable = false)
