@@ -8,6 +8,7 @@ public class OmConstants {
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static final class ErrorCodes {
+        public static final String OFFER_NOT_FOUND = "offerNotFound";
     }
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
