@@ -25,6 +25,7 @@ public class OfferService {
 
     @Transactional
     public CreateOfferResponseDto createOffer(CreateOfferDto dto) {
+        System.out.println(dto.getName());
         Offer offer = Offer.builder()
                 .name(dto.getName())
                 .approvalStatus(OfferApprovalStatus.NONE)

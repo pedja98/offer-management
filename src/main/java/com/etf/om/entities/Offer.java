@@ -26,7 +26,7 @@ public class Offer {
     @GeneratedValue
     private UUID id;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false)
     private String name;
 
     @Enumerated(EnumType.STRING)
