@@ -29,9 +29,12 @@ public class TariffPlanDiscounts {
     @Column(nullable = false, name="additional_discount")
     private BigDecimal additionalDiscount =  BigDecimal.ZERO;
 
-    @ManyToOne
-    @JoinColumn(name = "tariff_plan_id", updatable = false)
-    private TariffPlan tariffPlan;
+    @Column(nullable = false, name = "tariff_Plan_Identifier")
+    private String tariffPlanIdentifier;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "offer_id", nullable = false)
+    private Offer offer;
 
     @Column(nullable = false, length = 20, name = "created_by_user")
     private String createdByUser;

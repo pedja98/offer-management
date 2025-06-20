@@ -37,9 +37,12 @@ public class Addon {
     @Column(nullable = false)
     private BigDecimal price;
 
+    @Column(nullable = false, name = "tariff_Plan_Identifier")
+    private String tariffPlanIdentifier;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tariff_plan_id", nullable = false)
-    private TariffPlan tariffPlan;
+    @JoinColumn(name = "offer_id", nullable = false)
+    private Offer offer;
 
     @Column(nullable = false, length = 20, name = "created_by_user")
     private String createdByUser;

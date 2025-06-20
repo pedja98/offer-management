@@ -12,6 +12,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -32,6 +33,15 @@ public class Offer {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private OfferStatus status;
+
+    @OneToMany(mappedBy = "offer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TariffPlan> tariffPlans;
+
+    @Column(nullable = false)
+    private Integer mmc = 0;
+
+    @Column(nullable = false, name = "contract_period")
+    private Integer contractPeriod = 0;
 
     @Column(name = "approval_description", columnDefinition = "TEXT")
     private String approvalDescription;

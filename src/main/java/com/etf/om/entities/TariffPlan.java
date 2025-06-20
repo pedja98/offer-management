@@ -47,8 +47,9 @@ public class TariffPlan {
     @Column(nullable = false, name = "actual_tp_price")
     private BigDecimal actualTpPrice;
 
-    @OneToMany(mappedBy = "tariffPlan", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Addon> addons;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "offer_id", nullable = false)
+    private Offer offer;
 
     @Column(nullable = false, length = 20, name = "created_by_user")
     private String createdByUser;

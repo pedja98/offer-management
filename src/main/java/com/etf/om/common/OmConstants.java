@@ -13,5 +13,6 @@ public class OmConstants {
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static final class SuccessCodes {
+        public static final String OFFER_UPDATED = "offerUpdated";
     }
 }

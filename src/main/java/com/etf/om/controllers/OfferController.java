@@ -1,14 +1,13 @@
 package com.etf.om.controllers;
 
-import com.etf.om.dtos.CreateOfferDto;
-import com.etf.om.dtos.CreateOfferResponseDto;
-import com.etf.om.dtos.OfferDto;
+import com.etf.om.dtos.*;
 import com.etf.om.services.OfferService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -32,4 +31,13 @@ public class OfferController {
     public ResponseEntity<List<OfferDto>> getAllOffers() {
         return ResponseEntity.ok(offerService.getAllOffers());
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<MessageResponse> patchOffer(
+            @PathVariable UUID id,
+            @RequestBody Map<String, Object> body
+    ) {
+        return ResponseEntity.ok(new MessageResponse(offerService.patchOffer(id, body)));
+    }
+
 }
