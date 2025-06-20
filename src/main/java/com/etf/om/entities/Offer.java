@@ -40,8 +40,8 @@ public class Offer {
     @Column(nullable = false)
     private Integer mmc = 0;
 
-    @Column(nullable = false, name = "contract_period")
-    private Integer contractPeriod = 0;
+    @Column(nullable = false, name = "contract_obligation")
+    private Integer contractObligation = 0;
 
     @Column(name = "approval_description", columnDefinition = "TEXT")
     private String approvalDescription;

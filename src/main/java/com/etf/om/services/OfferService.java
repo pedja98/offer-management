@@ -31,7 +31,7 @@ public class OfferService {
         Offer offer = Offer.builder()
                 .name(dto.getName())
                 .mmc(0)
-                .contractPeriod(0)
+                .contractObligation(0)
                 .approvalStatus(OfferApprovalStatus.NONE)
                 .status(OfferStatus.DRAFT)
                 .createdByUsername(SetCurrentUserFilter.getCurrentUsername())
