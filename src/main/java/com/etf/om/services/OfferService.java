@@ -1,10 +1,8 @@
 package com.etf.om.services;
 
 import com.etf.om.dtos.CreateOfferDto;
-import com.etf.om.dtos.CreateOfferResponseDto;
 import com.etf.om.dtos.OfferDto;
 import com.etf.om.entities.Offer;
-import com.etf.om.enums.OfferApprovalStatus;
 import com.etf.om.enums.OfferStatus;
 import com.etf.om.exceptions.ItemNotFoundException;
 import com.etf.om.filters.SetCurrentUserFilter;
@@ -18,6 +16,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.etf.om.common.OmConstants.ErrorCodes.OFFER_NOT_FOUND;
+import static com.etf.om.common.OmConstants.SuccessCodes.OFFER_CREATED;
 import static com.etf.om.common.OmConstants.SuccessCodes.OFFER_UPDATED;
 
 @Service
@@ -26,22 +25,29 @@ public class OfferService {
     private OfferRepository offerRepository;
 
     @Transactional
-    public CreateOfferResponseDto createOffer(CreateOfferDto dto) {
-        System.out.println(dto.getName());
+    public String createOffer(CreateOfferDto body) {
         Offer offer = Offer.builder()
-                .name(dto.getName())
+                .name(body.getName())
+                .opportunityId(body.getOpportunityId())
+                .companyId(body.getCompanyId())
+                .crmOfferId(body.getCrmOfferId())
                 .mmc(0)
                 .contractObligation(0)
-                .approvalStatus(OfferApprovalStatus.NONE)
                 .status(OfferStatus.DRAFT)
                 .createdByUsername(SetCurrentUserFilter.getCurrentUsername())
                 .build();
 
-        return (new CreateOfferResponseDto(offerRepository.save(offer).getId()));
+        this.offerRepository.save(offer);
+        return OFFER_CREATED;
     }
 
     public OfferDto getOfferById(UUID id) {
         return this.offerRepository.findOfferDtoById(id)
+                .orElseThrow(() -> new ItemNotFoundException(OFFER_NOT_FOUND));
+    }
+
+    public OfferDto getOfferByCrmOfferId(Long crmOfferId) {
+        return this.offerRepository.findOfferDtoByCrmOfferId(crmOfferId)
                 .orElseThrow(() -> new ItemNotFoundException(OFFER_NOT_FOUND));
     }
 

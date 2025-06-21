@@ -1,7 +1,6 @@
 package com.etf.om.entities;
 
 import com.etf.om.enums.OfferApprovalLevels;
-import com.etf.om.enums.OfferApprovalStatus;
 import com.etf.om.enums.OfferStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -50,9 +49,14 @@ public class Offer {
     @Column(name = "approval_level")
     private OfferApprovalLevels approvalLevel;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, name = "approval_status")
-    private OfferApprovalStatus approvalStatus;
+    @Column(name = "company_id", nullable = false)
+    private Long companyId;
+
+    @Column(name = "opportunity_id", nullable = false)
+    private Long opportunityId;
+
+    @Column(name = "crm_offer_id", nullable = false)
+    private Long crmOfferId;
 
     @Column(name = "created_by_username", nullable = false, updatable = false)
     private String createdByUsername;

@@ -17,9 +17,14 @@ public class OfferController {
 
     private final OfferService offerService;
 
+    @GetMapping("/crm/{crmOfferId}")
+    public ResponseEntity<OfferDto> getOfferByCrmOfferId(@PathVariable Long crmOfferId) {
+        return ResponseEntity.ok(offerService.getOfferByCrmOfferId(crmOfferId));
+    }
+
     @PostMapping
-    public ResponseEntity<CreateOfferResponseDto> createOffer(@RequestBody CreateOfferDto dto) {
-        return ResponseEntity.ok(this.offerService.createOffer(dto));
+    public ResponseEntity<MessageResponse> createOffer(@RequestBody CreateOfferDto body) {
+        return ResponseEntity.ok(new MessageResponse(this.offerService.createOffer(body)));
     }
 
     @GetMapping("/{id}")

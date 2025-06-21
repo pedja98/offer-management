@@ -13,13 +13,22 @@ import java.util.UUID;
 @Repository
 public interface OfferRepository extends JpaRepository<Offer, UUID> {
     @Query("""
-            SELECT new com.etf.om.dtos.OfferDto(o.id, o.name, o.mmc, o.contractObligation, o.status, o.approvalDescription, o.approvalLevel, o.approvalStatus, o.createdByUsername, o.modifiedByUsername, o.dateCreated, o.dateModified)
+            SELECT new com.etf.om.dtos.OfferDto(o.id, o.name, o.mmc, o.contractObligation, o.status, o.approvalDescription,
+                         o.approvalLevel, o.companyId, o.opportunityId, o.crmOfferId ,o.createdByUsername, o.modifiedByUsername, o.dateCreated, o.dateModified)
             FROM Offer o
             WHERE o.id = :id""")
     Optional<OfferDto> findOfferDtoById(UUID id);
 
     @Query("""
-            SELECT new com.etf.om.dtos.OfferDto(o.id, o.name, o.mmc, o.contractObligation, o.status, o.approvalDescription, o.approvalLevel, o.approvalStatus, o.createdByUsername, o.modifiedByUsername, o.dateCreated, o.dateModified)
+            SELECT new com.etf.om.dtos.OfferDto(o.id, o.name, o.mmc, o.contractObligation, o.status, o.approvalDescription,
+                         o.approvalLevel, o.companyId, o.opportunityId, o.crmOfferId ,o.createdByUsername, o.modifiedByUsername, o.dateCreated, o.dateModified)
+            FROM Offer o
+            WHERE o.crmOfferId = :crmOfferId""")
+    Optional<OfferDto> findOfferDtoByCrmOfferId(Long crmOfferId);
+
+    @Query("""
+            SELECT new com.etf.om.dtos.OfferDto(o.id, o.name, o.mmc, o.contractObligation, o.status, o.approvalDescription,
+                         o.approvalLevel, o.companyId, o.opportunityId, o.crmOfferId ,o.createdByUsername, o.modifiedByUsername, o.dateCreated, o.dateModified)
             FROM Offer o""")
     List<OfferDto> findAllOfferDto();
 }
