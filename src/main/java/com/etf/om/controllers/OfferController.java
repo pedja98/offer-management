@@ -39,5 +39,4 @@ public class OfferController {
     ) {
         return ResponseEntity.ok(new MessageResponse(offerService.patchOffer(id, body)));
     }
-
 }
