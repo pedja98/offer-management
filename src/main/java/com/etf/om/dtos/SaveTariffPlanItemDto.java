@@ -5,13 +5,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+import java.util.Map;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateOfferDto {
-    private String name;
-    private Long crmOfferId;
-    private Long companyId;
-    private Long opportunityId;
+public class SaveTariffPlanItemDto {
+    private String identifier;
+    private Map<String, String> name;
+    private BigDecimal price;
 }

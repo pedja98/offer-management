@@ -31,10 +31,10 @@ public class TariffPlan {
     @Column(columnDefinition = "VARCHAR", length = 255, name = "planned_tp_name")
     private Map<String, String> plannedTpName;
 
-    @Column(nullable = false, length = 30, name = "planned_tp_identifier")
+    @Column(length = 30, name = "planned_tp_identifier")
     private String plannedTpIdentifier;
 
-    @Column(nullable = false, name = "planned_tp_price")
+    @Column(name = "planned_tp_price")
     private BigDecimal plannedTpPrice;
 
     @Convert(converter = JsonToNameMapConvertor.class)
