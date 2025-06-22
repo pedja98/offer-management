@@ -9,12 +9,15 @@ public class OmConstants {
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static final class ErrorCodes {
         public static final String OFFER_NOT_FOUND = "offerNotFound";
+        public static final String ADDON_NOT_FOUND = "addonNotFound";
     }
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static final class SuccessCodes {
         public static final String OFFER_UPDATED = "offerUpdated";
         public static  final String OFFER_CREATED = "offerCreated";
+        public static  final String ADDON_CREATED = "addonCreated";
         public static final String ADD_TARIFF_PLANS = "addTariffPlans";
+        public static final String ADDON_DELETED = "addonDeleted";
     }
 }

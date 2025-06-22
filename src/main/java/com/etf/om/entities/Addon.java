@@ -31,7 +31,7 @@ public class Addon {
     @Column(columnDefinition = "VARCHAR", length = 255)
     private Map<String, String> name;
 
-    @Column(nullable = false, length = 30, unique = true)
+    @Column(nullable = false, length = 30)
     private String identifier;
 
     @Column(nullable = false)
