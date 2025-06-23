@@ -2,7 +2,9 @@ package com.etf.om.repositories;
 
 import com.etf.om.dtos.AddonDto;
 import com.etf.om.entities.Addon;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
@@ -22,4 +24,12 @@ public interface AddonRepository extends JpaRepository<Addon, UUID> {
     WHERE a.offer.id = :offerId AND a.tariffPlanIdentifier = :tariffPlanIdentifier
 """)
     List<AddonDto> findAllAddonDtosByOfferIdAndTariffPlanIdentifier(UUID offerId, String tariffPlanIdentifier);
+
+    @Query("SELECT DISTINCT a.tariffPlanIdentifier FROM Addon a")
+    List<String> findDistinctTariffPlanIdentifiers();
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM Addon a WHERE a.tariffPlanIdentifier IN :identifiers")
+    void deleteAllByTariffPlanIdentifierIn(@org.springframework.data.repository.query.Param("identifiers") List<String> identifiers);
 }

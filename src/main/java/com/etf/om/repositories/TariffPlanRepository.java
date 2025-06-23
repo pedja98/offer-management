@@ -18,4 +18,14 @@ public interface TariffPlanRepository extends JpaRepository<TariffPlan, UUID> {
 """)
     List<TariffPlanDto> findAllTariffPlanDtosByOfferId(@Param("offerId") UUID offerId);
 
+    @Query("""
+    SELECT DISTINCT\s
+        CASE\s
+            WHEN tp.actualTpIdentifier IS NOT NULL THEN tp.actualTpIdentifier\s
+            ELSE tp.plannedTpIdentifier\s
+        END
+    FROM TariffPlan tp
+""")
+    List<String> findAllDistinctPreferredIdentifiers();
+
 }
