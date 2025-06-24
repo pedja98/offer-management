@@ -30,8 +30,8 @@ public class TariffPlanController {
     }
 
     @PutMapping("bulk")
-    public ResponseEntity<String> updateBulkTariffPlans(@RequestBody UpdateTariffPlansDto body) {
-        return ResponseEntity.ok(this.tariffPlanService.updateBulkTariffPlans(body));
+    public ResponseEntity<MessageResponse> updateBulkTariffPlans(@RequestBody UpdateTariffPlansDto body) {
+        return ResponseEntity.ok(new MessageResponse(this.tariffPlanService.updateBulkTariffPlans(body)));
     }
 
     @DeleteMapping("bulk")
