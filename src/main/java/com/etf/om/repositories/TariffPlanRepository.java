@@ -15,6 +15,7 @@ public interface TariffPlanRepository extends JpaRepository<TariffPlan, UUID> {
                                              tp.actualTpName, tp.actualTpIdentifier, tp.actualTpPrice, tp.deactivate)
     FROM TariffPlan tp
     WHERE tp.offer.id = :offerId
+    Order by tp.dateCreated, tp.dateModified desc
 """)
     List<TariffPlanDto> findAllTariffPlanDtosByOfferId(@Param("offerId") UUID offerId);
 

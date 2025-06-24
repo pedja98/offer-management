@@ -1,11 +1,9 @@
 package com.etf.om.services;
 
-import com.etf.om.dtos.CreateTariffPlanDto;
-import com.etf.om.dtos.CreateTariffPlansBulkResponseDto;
-import com.etf.om.dtos.TariffPlanDto;
-import com.etf.om.dtos.UpdateTariffPlansDto;
+import com.etf.om.dtos.*;
 import com.etf.om.entities.Offer;
 import com.etf.om.entities.TariffPlan;
+import com.etf.om.exceptions.ItemNotFoundException;
 import com.etf.om.filters.SetCurrentUserFilter;
 import com.etf.om.repositories.AddonRepository;
 import com.etf.om.repositories.OfferRepository;
@@ -14,7 +12,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Field;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.etf.om.common.OmConstants.ErrorCodes.TARIFF_PLAN_NOT_FOUND;
 import static com.etf.om.common.OmConstants.ErrorCodes.OFFER_NOT_FOUND;
@@ -86,6 +86,14 @@ public class TariffPlanService {
         }
         this.removeConnectedEntities();
         return TARIFF_PLANS_DELETED;
+    }
+
+    @Transactional
+    public String deactivateOfferTariffPlan(UUID id, DeactivateTariffPlanDto body) {
+        TariffPlan tariffPlan = this.tariffPlanRepository.findById(id).orElseThrow(() -> new ItemNotFoundException(TARIFF_PLAN_NOT_FOUND));
+        tariffPlan.setDeactivate(body.getDeactivate());
+        this.tariffPlanRepository.save(tariffPlan);
+        return TARIFF_PLAN_UPDATED;
     }
 
     protected void removeConnectedEntities() {

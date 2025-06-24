@@ -1,9 +1,6 @@
 package com.etf.om.controllers;
 
-import com.etf.om.dtos.CreateTariffPlanDto;
-import com.etf.om.dtos.CreateTariffPlansBulkResponseDto;
-import com.etf.om.dtos.TariffPlanDto;
-import com.etf.om.dtos.UpdateTariffPlansDto;
+import com.etf.om.dtos.*;
 import com.etf.om.services.TariffPlanService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -37,7 +35,15 @@ public class TariffPlanController {
     }
 
     @DeleteMapping("bulk")
-    public ResponseEntity<String> deleteBulkTariffPlans(@RequestBody List<UUID> tpIds) {
-        return ResponseEntity.ok(this.tariffPlanService.deleteBulkTariffPlans(tpIds));
+    public ResponseEntity<MessageResponse> deleteBulkTariffPlans(@RequestBody List<UUID> tpIds) {
+        return ResponseEntity.ok(new MessageResponse(this.tariffPlanService.deleteBulkTariffPlans(tpIds)));
+    }
+
+    @PatchMapping("/{id}/deactivate")
+    public ResponseEntity<MessageResponse> deactivateOfferTariffPlan(
+            @PathVariable UUID id,
+            @RequestBody DeactivateTariffPlanDto body
+    ) {
+        return ResponseEntity.ok(new MessageResponse(this.tariffPlanService.deactivateOfferTariffPlan(id, body)));
     }
 }
