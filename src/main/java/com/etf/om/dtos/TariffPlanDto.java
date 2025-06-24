@@ -19,4 +19,5 @@ public class TariffPlanDto {
     private Map<String, String> actualTpName;
     private String actualTpIdentifier;
     private BigDecimal actualTpPrice;
+    private boolean deactivate;
 }

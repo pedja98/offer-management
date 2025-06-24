@@ -47,6 +47,9 @@ public class TariffPlan {
     @Column(nullable = false, name = "actual_tp_price")
     private BigDecimal actualTpPrice;
 
+    @Column()
+    private Boolean deactivate = false;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "offer_id", nullable = false)
     private Offer offer;

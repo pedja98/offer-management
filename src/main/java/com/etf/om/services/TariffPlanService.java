@@ -46,12 +46,13 @@ public class TariffPlanService {
                     .actualTpName(body.getTariffPlan().getName())
                     .actualTpPrice(body.getTariffPlan().getPrice())
                     .offer(offer)
+                    .deactivate(false)
                     .createdByUser(username)
                     .build();
             UUID tpId = this.tariffPlanRepository.save(tariffPlan).getId();
             tariffPlans.add(new TariffPlanDto(tpId,
                     tariffPlan.getPlannedTpName(), tariffPlan.getPlannedTpIdentifier(), tariffPlan.getPlannedTpPrice(),
-                    tariffPlan.getActualTpName(), tariffPlan.getActualTpIdentifier(), tariffPlan.getActualTpPrice()
+                    tariffPlan.getActualTpName(), tariffPlan.getActualTpIdentifier(), tariffPlan.getActualTpPrice(), tariffPlan.getDeactivate()
             ));
         }
         return new CreateTariffPlansBulkResponseDto(ADD_TARIFF_PLANS, tariffPlans);

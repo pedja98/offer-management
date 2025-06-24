@@ -12,7 +12,7 @@ import java.util.UUID;
 public interface TariffPlanRepository extends JpaRepository<TariffPlan, UUID> {
     @Query("""
     SELECT new com.etf.om.dtos.TariffPlanDto(tp.id, tp.plannedTpName, tp.plannedTpIdentifier, tp.plannedTpPrice,
-                                             tp.actualTpName, tp.actualTpIdentifier, tp.actualTpPrice)
+                                             tp.actualTpName, tp.actualTpIdentifier, tp.actualTpPrice, tp.deactivate)
     FROM TariffPlan tp
     WHERE tp.offer.id = :offerId
 """)
