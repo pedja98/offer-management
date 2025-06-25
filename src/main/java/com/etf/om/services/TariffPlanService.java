@@ -11,7 +11,9 @@ import com.etf.om.repositories.TariffPlanRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.etf.om.common.OmConstants.ErrorCodes.TARIFF_PLAN_NOT_FOUND;
 import static com.etf.om.common.OmConstants.ErrorCodes.OFFER_NOT_FOUND;
@@ -55,7 +57,7 @@ public class TariffPlanService {
     }
 
     @Transactional
-    public String updateBulkTariffPlans(UpdateTariffPlansDto body) {
+    public String updateBulkTariffPlans(UpdateTariffPlansDto body, UUID offerId) {
         for (UUID uuid : body.uuids) {
             TariffPlan tariffPlan = tariffPlanRepository.findById(uuid)
                     .orElseThrow(() -> new RuntimeException(TARIFF_PLAN_NOT_FOUND));
@@ -65,18 +67,18 @@ public class TariffPlanService {
 
             this.tariffPlanRepository.save(tariffPlan);
         }
-        this.removeConnectedEntities();
+        this.removeConnectedEntities(offerId);
         return TARIFF_PLANS_UPDATED;
     }
 
     @Transactional
-    public String deleteBulkTariffPlans(List<UUID> tpIds) {
+    public String deleteBulkTariffPlans(List<UUID> tpIds, UUID offerId) {
         for (UUID uuid : tpIds) {
             TariffPlan tariffPlan = tariffPlanRepository.findById(uuid)
                     .orElseThrow(() -> new RuntimeException(TARIFF_PLAN_NOT_FOUND));
             this.tariffPlanRepository.delete(tariffPlan);
         }
-        this.removeConnectedEntities();
+        this.removeConnectedEntities(offerId);
         return TARIFF_PLANS_DELETED;
     }
 
@@ -85,12 +87,25 @@ public class TariffPlanService {
         TariffPlan tariffPlan = this.tariffPlanRepository.findById(id).orElseThrow(() -> new ItemNotFoundException(TARIFF_PLAN_NOT_FOUND));
         tariffPlan.setDeactivate(body.getDeactivate());
         this.tariffPlanRepository.save(tariffPlan);
+        this.removeConnectedEntities(tariffPlan.getOffer().getId());
         return TARIFF_PLAN_UPDATED;
     }
 
-    protected void removeConnectedEntities() {
-        List<String> tpIdentifiers = this.tariffPlanRepository.findAllDistinctPreferredIdentifiers();
-        List<String> addonTariffPlanIdentifiers = this.addonRepository.findDistinctTariffPlanIdentifiers();
+    public Map<String, Map<String, Object>> getTariffPlanCountsWithNames(UUID offerId) {
+        List<IdentifierCountNameDto> data = this.tariffPlanRepository.countTariffPlansByIdentifierWithName(offerId);
+
+        return data.stream().collect(Collectors.toMap(
+                IdentifierCountNameDto::getIdentifier,
+                dto -> Map.of(
+                        "name", dto.getName(),
+                        "count", dto.getCount()
+                )
+        ));
+    }
+
+    private void removeConnectedEntities(UUID offerId) {
+        List<String> tpIdentifiers = this.tariffPlanRepository.findAllDistinctPreferredIdentifiers(offerId);
+        List<String> addonTariffPlanIdentifiers = this.addonRepository.findDistinctTariffPlanIdentifiers(offerId);
 
         Set<String> tpIdentifierSet = new HashSet<>(tpIdentifiers);
 

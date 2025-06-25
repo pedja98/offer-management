@@ -29,14 +29,14 @@ public class TariffPlanController {
         return ResponseEntity.ok(this.tariffPlanService.getTariffPlansFromOffer(offerId));
     }
 
-    @PutMapping("bulk")
-    public ResponseEntity<MessageResponse> updateBulkTariffPlans(@RequestBody UpdateTariffPlansDto body) {
-        return ResponseEntity.ok(new MessageResponse(this.tariffPlanService.updateBulkTariffPlans(body)));
+    @PutMapping("offer/{offerId}/bulk")
+    public ResponseEntity<MessageResponse> updateBulkTariffPlans(@RequestBody UpdateTariffPlansDto body, @PathVariable UUID offerId) {
+        return ResponseEntity.ok(new MessageResponse(this.tariffPlanService.updateBulkTariffPlans(body, offerId)));
     }
 
-    @DeleteMapping("bulk")
-    public ResponseEntity<MessageResponse> deleteBulkTariffPlans(@RequestBody List<UUID> tpIds) {
-        return ResponseEntity.ok(new MessageResponse(this.tariffPlanService.deleteBulkTariffPlans(tpIds)));
+    @DeleteMapping("offer/{offerId}/bulk")
+    public ResponseEntity<MessageResponse> deleteBulkTariffPlans(@RequestBody List<UUID> tpIds, @PathVariable UUID offerId) {
+        return ResponseEntity.ok(new MessageResponse(this.tariffPlanService.deleteBulkTariffPlans(tpIds, offerId)));
     }
 
     @PatchMapping("/{id}/deactivate")
@@ -46,4 +46,10 @@ public class TariffPlanController {
     ) {
         return ResponseEntity.ok(new MessageResponse(this.tariffPlanService.deactivateOfferTariffPlan(id, body)));
     }
+
+    @GetMapping("offer/{offerId}/identifier-counts")
+    public ResponseEntity<Map<String, Map<String, Object>>> getTariffPlanCountsWithNames(@PathVariable UUID offerId) {
+        return ResponseEntity.ok(this.tariffPlanService.getTariffPlanCountsWithNames(offerId));
+    }
+
 }

@@ -6,6 +6,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.UUID;
@@ -25,8 +26,8 @@ public interface AddonRepository extends JpaRepository<Addon, UUID> {
 """)
     List<AddonDto> findAllAddonDtosByOfferIdAndTariffPlanIdentifier(UUID offerId, String tariffPlanIdentifier);
 
-    @Query("SELECT DISTINCT a.tariffPlanIdentifier FROM Addon a")
-    List<String> findDistinctTariffPlanIdentifiers();
+    @Query("SELECT DISTINCT a.tariffPlanIdentifier FROM Addon a WHERE a.offer.id = :offerId")
+    List<String> findDistinctTariffPlanIdentifiers(@Param("offerId") UUID offerId);
 
     @Modifying
     @Transactional
