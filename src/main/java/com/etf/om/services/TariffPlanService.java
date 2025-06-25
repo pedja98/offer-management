@@ -11,10 +11,7 @@ import com.etf.om.repositories.TariffPlanRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.lang.reflect.Field;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.etf.om.common.OmConstants.ErrorCodes.TARIFF_PLAN_NOT_FOUND;
 import static com.etf.om.common.OmConstants.ErrorCodes.OFFER_NOT_FOUND;
@@ -33,12 +30,11 @@ public class TariffPlanService {
     private AddonRepository addonRepository;
 
     @Transactional
-    public CreateTariffPlansBulkResponseDto createBulkTariffPlans(CreateTariffPlanDto body) {
+    public String createBulkTariffPlans(CreateTariffPlanDto body) {
         Offer offer = offerRepository.findById(body.getOmOfferId())
                 .orElseThrow(() -> new RuntimeException(OFFER_NOT_FOUND));
 
         String username = SetCurrentUserFilter.getCurrentUsername();
-        List<TariffPlanDto> tariffPlans = new ArrayList<>();
 
         for (int i = 0; i < body.getNumberOfItems(); i++) {
             TariffPlan tariffPlan = TariffPlan.builder()
@@ -50,12 +46,8 @@ public class TariffPlanService {
                     .createdByUser(username)
                     .build();
             UUID tpId = this.tariffPlanRepository.save(tariffPlan).getId();
-            tariffPlans.add(new TariffPlanDto(tpId,
-                    tariffPlan.getPlannedTpName(), tariffPlan.getPlannedTpIdentifier(), tariffPlan.getPlannedTpPrice(),
-                    tariffPlan.getActualTpName(), tariffPlan.getActualTpIdentifier(), tariffPlan.getActualTpPrice(), tariffPlan.getDeactivate()
-            ));
         }
-        return new CreateTariffPlansBulkResponseDto(ADD_TARIFF_PLANS, tariffPlans);
+        return ADD_TARIFF_PLANS;
     }
 
     public List<TariffPlanDto> getTariffPlansFromOffer(UUID offerId) {

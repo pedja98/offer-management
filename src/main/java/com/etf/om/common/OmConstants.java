@@ -19,7 +19,7 @@ public class OmConstants {
         public static  final String OFFER_CREATED = "offerCreated";
         public static  final String ADDON_CREATED = "addonCreated";
         public static final String ADD_TARIFF_PLANS = "addTariffPlans";
-        public static final String ADDON_DELETED = "addonDeleted";
+        public static final String ADDONS_DELETED = "addonsDeleted";
         public static final String TARIFF_PLANS_UPDATED = "tariffPlansUpdated";
         public static final String TARIFF_PLAN_UPDATED = "tariffPlanUpdated";
         public static final String TARIFF_PLANS_DELETED = "tariffPlansDeleted";

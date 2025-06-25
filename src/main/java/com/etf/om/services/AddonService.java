@@ -2,7 +2,6 @@ package com.etf.om.services;
 
 import com.etf.om.dtos.AddonDto;
 import com.etf.om.dtos.CreateAddonDto;
-import com.etf.om.dtos.CreateAddonResponseDto;
 import com.etf.om.entities.Addon;
 import com.etf.om.entities.Offer;
 import com.etf.om.exceptions.ItemNotFoundException;
@@ -15,10 +14,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 
-import static com.etf.om.common.OmConstants.ErrorCodes.ADDON_NOT_FOUND;
-import static com.etf.om.common.OmConstants.ErrorCodes.OFFER_NOT_FOUND;
+import static com.etf.om.common.OmConstants.ErrorCodes.*;
 import static com.etf.om.common.OmConstants.SuccessCodes.ADDON_CREATED;
-import static com.etf.om.common.OmConstants.SuccessCodes.ADDON_DELETED;
+import static com.etf.om.common.OmConstants.SuccessCodes.ADDONS_DELETED;
 
 @Service
 public class AddonService {
@@ -29,7 +27,7 @@ public class AddonService {
     @Autowired
     private OfferRepository offerRepository;
 
-    public CreateAddonResponseDto createAddon(CreateAddonDto body) {
+    public String createAddon(CreateAddonDto body) {
         Offer offer = offerRepository.findById(body.getOmOfferId())
                 .orElseThrow(() -> new ItemNotFoundException(OFFER_NOT_FOUND));
 
@@ -44,16 +42,17 @@ public class AddonService {
 
         UUID addonId = addonRepository.save(addon).getId();
 
-        return new CreateAddonResponseDto(new AddonDto(addonId, addon.getName(), addon.getIdentifier(),
-                addon.getPrice(), addon.getTariffPlanIdentifier(), offer.getId()), ADDON_CREATED);
+        return ADDON_CREATED;
     }
 
-    public String deleteAddon(UUID id) {
-        if (!addonRepository.existsById(id)) {
-            throw new IllegalArgumentException(ADDON_NOT_FOUND);
+    public String deleteAddonBulk(List<UUID> addonIds) {
+        for (UUID uuid : addonIds) {
+            Addon addon = this.addonRepository.findById(uuid)
+                    .orElseThrow(() -> new RuntimeException(TARIFF_PLAN_NOT_FOUND));
+            this.addonRepository.delete(addon);
         }
-        addonRepository.deleteById(id);
-        return ADDON_DELETED;
+
+        return ADDONS_DELETED;
     }
 
     public List<AddonDto> getAddonsByOfferIdAndTariffPlanIdentifier(UUID offerId, String tariffPlanIdentifier) {

@@ -2,7 +2,6 @@ package com.etf.om.controllers;
 
 import com.etf.om.dtos.AddonDto;
 import com.etf.om.dtos.CreateAddonDto;
-import com.etf.om.dtos.CreateAddonResponseDto;
 import com.etf.om.dtos.MessageResponse;
 import com.etf.om.services.AddonService;
 import lombok.RequiredArgsConstructor;
@@ -22,13 +21,13 @@ public class AddonController {
     private AddonService addonService;
 
     @PostMapping
-    public ResponseEntity<CreateAddonResponseDto> createAddon(@RequestBody CreateAddonDto body) {
-        return ResponseEntity.ok(addonService.createAddon(body));
+    public ResponseEntity<MessageResponse> createAddon(@RequestBody CreateAddonDto body) {
+        return ResponseEntity.ok(new MessageResponse(addonService.createAddon(body)));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<MessageResponse> deleteAddon(@PathVariable UUID id) {
-        return ResponseEntity.ok(new MessageResponse(this.addonService.deleteAddon(id)));
+    @DeleteMapping("/bulk")
+    public ResponseEntity<MessageResponse> deleteAddons(@RequestBody List<UUID>  addonIds) {
+        return ResponseEntity.ok(new MessageResponse(this.addonService.deleteAddonBulk(addonIds)));
     }
 
     @GetMapping

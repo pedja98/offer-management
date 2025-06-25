@@ -20,8 +20,8 @@ public class TariffPlanController {
     private final TariffPlanService tariffPlanService;
 
     @PostMapping("bulk")
-    public ResponseEntity<CreateTariffPlansBulkResponseDto> createOffer(@RequestBody CreateTariffPlanDto body) {
-        return ResponseEntity.ok(this.tariffPlanService.createBulkTariffPlans(body));
+    public ResponseEntity<MessageResponse> createOffer(@RequestBody CreateTariffPlanDto body) {
+        return ResponseEntity.ok(new MessageResponse(this.tariffPlanService.createBulkTariffPlans(body)));
     }
 
     @GetMapping("/offer/{offerId}")
