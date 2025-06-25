@@ -33,4 +33,8 @@ public interface AddonRepository extends JpaRepository<Addon, UUID> {
     @Transactional
     @Query("DELETE FROM Addon a WHERE a.tariffPlanIdentifier IN :identifiers")
     void deleteAllByTariffPlanIdentifierIn(@org.springframework.data.repository.query.Param("identifiers") List<String> identifiers);
+
+    @Query("SELECT COUNT(a) > 0 FROM Addon a WHERE a.offer.id = :offerId AND a.identifier = :addonIdentifier")
+    boolean existsByOfferIdAndAddonIdentifier(@Param("offerId") UUID offerId, @Param("addonIdentifier") String addonIdentifier);
+
 }

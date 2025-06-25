@@ -10,6 +10,7 @@ public class OmConstants {
     public static final class ErrorCodes {
         public static final String OFFER_NOT_FOUND = "offerNotFound";
         public static final String ADDON_NOT_FOUND = "addonNotFound";
+        public static final String ADDON_DUPLICATE = "addonDuplicate";
         public static final String TARIFF_PLAN_NOT_FOUND = "tariffPlanNotFound";
     }
 

@@ -4,6 +4,7 @@ import com.etf.om.dtos.AddonDto;
 import com.etf.om.dtos.CreateAddonDto;
 import com.etf.om.entities.Addon;
 import com.etf.om.entities.Offer;
+import com.etf.om.exceptions.DuplicateItemException;
 import com.etf.om.exceptions.ItemNotFoundException;
 import com.etf.om.filters.SetCurrentUserFilter;
 import com.etf.om.repositories.AddonRepository;
@@ -28,6 +29,9 @@ public class AddonService {
     private OfferRepository offerRepository;
 
     public String createAddon(CreateAddonDto body) {
+        if (this.addonRepository.existsByOfferIdAndAddonIdentifier(body.getOmOfferId(), body.getIdentifier())) {
+            throw new DuplicateItemException(ADDON_DUPLICATE);
+        }
         Offer offer = offerRepository.findById(body.getOmOfferId())
                 .orElseThrow(() -> new ItemNotFoundException(OFFER_NOT_FOUND));
 

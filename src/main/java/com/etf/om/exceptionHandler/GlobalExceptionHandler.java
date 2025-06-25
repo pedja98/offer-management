@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleExceptions(Exception ex) {
         HttpStatus status = switch (ex.getClass().getSimpleName()) {
             case "ItemNotFoundException" -> HttpStatus.NOT_FOUND;
-            case "DuplicateItemException" -> HttpStatus.CONFLICT;
+            case "DuplicateItemException" -> HttpStatus.FORBIDDEN;
             case "PropertyCopyException",
                  "InvalidAttributeValueException",
                  "BadRequestException" -> HttpStatus.BAD_REQUEST;
