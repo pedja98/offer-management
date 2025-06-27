@@ -13,9 +13,14 @@ import java.io.IOException;
 public class SetCurrentUserFilter extends OncePerRequestFilter {
 
     private static final ThreadLocal<String> currentUsernameThreadLocal = new ThreadLocal<>();
+    private static final ThreadLocal<String> currentUserTypeThreadLocal = new ThreadLocal<>();
 
     public static String getCurrentUsername() {
         return currentUsernameThreadLocal.get();
+    }
+
+    public static String getCurrentUserType() {
+        return currentUserTypeThreadLocal.get();
     }
 
     @Override
@@ -27,10 +32,16 @@ public class SetCurrentUserFilter extends OncePerRequestFilter {
             currentUsernameThreadLocal.set(usernameHeader);
         }
 
+        String userTypeHeader = request.getHeader("X-User-Type");
+        if (userTypeHeader != null && !userTypeHeader.isBlank()) {
+            currentUserTypeThreadLocal.set(userTypeHeader);
+        }
+
         try {
             filterChain.doFilter(request, response);
         } finally {
             currentUsernameThreadLocal.remove();
+            currentUserTypeThreadLocal.remove();
         }
     }
 }

@@ -29,7 +29,7 @@ public class AddonService {
     private OfferRepository offerRepository;
 
     public String createAddon(CreateAddonDto body) {
-        if (this.addonRepository.existsByOfferIdAndAddonIdentifier(body.getOmOfferId(), body.getIdentifier())) {
+        if (this.addonRepository.existsByOfferIdAddonIdentifierAndTariffPlanIdentifier(body.getOmOfferId(), body.getIdentifier(), body.getTariffPlanIdentifier())) {
             throw new DuplicateItemException(ADDON_DUPLICATE);
         }
         Offer offer = offerRepository.findById(body.getOmOfferId())

@@ -1,5 +1,6 @@
 package com.etf.om.repositories;
 
+import com.etf.om.dtos.IdentifierCountDto;
 import com.etf.om.dtos.IdentifierCountNameDto;
 import com.etf.om.dtos.TariffPlanDto;
 import com.etf.om.entities.TariffPlan;
@@ -42,4 +43,16 @@ public interface TariffPlanRepository extends JpaRepository<TariffPlan, UUID> {
             GROUP BY COALESCE(tp.actualTpIdentifier, tp.plannedTpIdentifier), COALESCE(tp.actualTpName, tp.plannedTpName)
             """)
     List<IdentifierCountNameDto> countTariffPlansByIdentifierWithName(@Param("offerId") UUID offerId);
+
+    @Query("""
+            SELECT new com.etf.om.dtos.IdentifierCountDto(
+                COALESCE(tp.actualTpIdentifier, tp.plannedTpIdentifier),
+                COUNT(tp)
+            )
+            FROM TariffPlan tp
+            WHERE tp.deactivate = false
+            GROUP BY COALESCE(tp.actualTpIdentifier, tp.plannedTpIdentifier)
+            """)
+    List<IdentifierCountDto> countTariffPlansGroupedByPreferredIdentifier();
+
 }

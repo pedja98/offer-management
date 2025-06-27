@@ -10,8 +10,10 @@ public class OmConstants {
     public static final class ErrorCodes {
         public static final String OFFER_NOT_FOUND = "offerNotFound";
         public static final String ADDON_NOT_FOUND = "addonNotFound";
+        public static final String DISCOUNT_NOT_FOUND = "discountNotFound";
         public static final String ADDON_DUPLICATE = "addonDuplicate";
         public static final String TARIFF_PLAN_NOT_FOUND = "tariffPlanNotFound";
+        public static final String DISCOUNT_MAX = "discountMax";
     }
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -24,5 +26,6 @@ public class OmConstants {
         public static final String TARIFF_PLANS_UPDATED = "tariffPlansUpdated";
         public static final String TARIFF_PLAN_UPDATED = "tariffPlanUpdated";
         public static final String TARIFF_PLANS_DELETED = "tariffPlansDeleted";
+        public static final String DISCOUNT_UPDATED = "discountUpdated";
     }
 }

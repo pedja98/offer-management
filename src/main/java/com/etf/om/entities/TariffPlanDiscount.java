@@ -18,7 +18,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TariffPlanDiscounts {
+public class TariffPlanDiscount {
     @Id
     @GeneratedValue
     private UUID id;

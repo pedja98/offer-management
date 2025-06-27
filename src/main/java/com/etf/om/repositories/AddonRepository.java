@@ -26,15 +26,12 @@ public interface AddonRepository extends JpaRepository<Addon, UUID> {
 """)
     List<AddonDto> findAllAddonDtosByOfferIdAndTariffPlanIdentifier(UUID offerId, String tariffPlanIdentifier);
 
-    @Query("SELECT DISTINCT a.tariffPlanIdentifier FROM Addon a WHERE a.offer.id = :offerId")
-    List<String> findDistinctTariffPlanIdentifiers(@Param("offerId") UUID offerId);
-
     @Modifying
     @Transactional
     @Query("DELETE FROM Addon a WHERE a.tariffPlanIdentifier IN :identifiers")
     void deleteAllByTariffPlanIdentifierIn(@org.springframework.data.repository.query.Param("identifiers") List<String> identifiers);
 
-    @Query("SELECT COUNT(a) > 0 FROM Addon a WHERE a.offer.id = :offerId AND a.identifier = :addonIdentifier")
-    boolean existsByOfferIdAndAddonIdentifier(@Param("offerId") UUID offerId, @Param("addonIdentifier") String addonIdentifier);
+    @Query("SELECT COUNT(a) > 0 FROM Addon a WHERE a.offer.id = :offerId AND a.identifier = :addonIdentifier AND a.tariffPlanIdentifier = :tpIdentifier")
+    boolean existsByOfferIdAddonIdentifierAndTariffPlanIdentifier(@Param("offerId") UUID offerId, @Param("addonIdentifier") String addonIdentifier, @Param("tpIdentifier") String tpIdentifier);
 
 }
