@@ -55,4 +55,6 @@ public interface TariffPlanRepository extends JpaRepository<TariffPlan, UUID> {
             """)
     List<IdentifierCountDto> countTariffPlansGroupedByPreferredIdentifier();
 
+    @Query("SELECT COUNT(tp) FROM TariffPlan tp WHERE tp.deactivate = false ")
+    long countActivatedTariffPlans();
 }

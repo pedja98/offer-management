@@ -96,6 +96,11 @@ public class TariffPlanService {
         }
         this.removeConnectedEntities(offerId, tpIdentifiersBeforeChange);
         this.formatDiscountConnectedToTariffPlan(offerId);
+        if (this.tariffPlanRepository.countActivatedTariffPlans() == 0) {
+            Offer offer = offerRepository.findById(offerId).orElseThrow(() -> new RuntimeException(OFFER_NOT_FOUND));
+            offer.setApprovalLevel(null);
+            this.offerRepository.save(offer);
+        }
         return TARIFF_PLANS_DELETED;
     }
 

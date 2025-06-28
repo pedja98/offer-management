@@ -2,6 +2,7 @@ package com.etf.om.enums;
 
 public enum OfferStatus {
     DRAFT,
+    OFFER_PENDING,
     L1_PENDING,
     L2_PENDING,
     SALESMEN_CLOSED,
