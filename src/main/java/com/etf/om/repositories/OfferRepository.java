@@ -13,6 +13,8 @@ import java.util.UUID;
 
 @Repository
 public interface OfferRepository extends JpaRepository<Offer, UUID> {
+    Offer findOfferByCrmOfferId(Long crmOfferId);
+
     @Query("""
             SELECT new com.etf.om.dtos.OfferDto(o.id, o.name, o.mmc, o.contractObligation, o.status, o.approvalDescription,
                          o.approvalLevel, o.companyId, o.opportunityId, o.crmOfferId ,o.createdByUsername, o.modifiedByUsername, o.dateCreated, o.dateModified)

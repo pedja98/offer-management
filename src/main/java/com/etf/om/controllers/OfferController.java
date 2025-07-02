@@ -1,6 +1,7 @@
 package com.etf.om.controllers;
 
 import com.etf.om.dtos.*;
+import com.etf.om.enums.OfferStatus;
 import com.etf.om.services.OfferService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -43,5 +44,13 @@ public class OfferController {
             @RequestBody Map<String, Object> body
     ) {
         return ResponseEntity.ok(new MessageResponse(offerService.patchOffer(id, body)));
+    }
+
+    @PatchMapping("/{crmOfferId}/status")
+    public ResponseEntity<MessageResponse> changeOfferStatus(
+            @PathVariable Long crmOfferId,
+            @RequestBody ChangeOfferStatusDto body
+    ) {
+        return ResponseEntity.ok(new MessageResponse(offerService.changeOfferStatus(crmOfferId, body)));
     }
 }

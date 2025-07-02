@@ -1,5 +1,6 @@
 package com.etf.om.services;
 
+import com.etf.om.dtos.ChangeOfferStatusDto;
 import com.etf.om.dtos.CreateOfferDto;
 import com.etf.om.dtos.OfferDto;
 import com.etf.om.entities.Offer;
@@ -110,4 +111,11 @@ public class OfferService {
         return OFFER_UPDATED;
     }
 
+    @Transactional
+    public String changeOfferStatus(Long crmOfferId, ChangeOfferStatusDto body) {
+        Offer offer = this.offerRepository.findOfferByCrmOfferId(crmOfferId);
+        offer.setStatus(body.getStatus());
+        this.offerRepository.save(offer);
+        return OFFER_UPDATED;
+    }
 }
