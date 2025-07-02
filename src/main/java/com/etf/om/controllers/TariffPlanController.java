@@ -52,4 +52,8 @@ public class TariffPlanController {
         return ResponseEntity.ok(this.tariffPlanService.getTariffPlanCountsWithNames(offerId));
     }
 
+    @GetMapping("/offer/{crmOfferId}/grouped-tariff-plans")
+    public ResponseEntity<TariffPlanGroupedByStatusDto> getGroupedTariffPlans(@PathVariable Long crmOfferId) {
+        return ResponseEntity.ok(tariffPlanService.getGroupedTariffPlansByCrmOfferId(crmOfferId));
+    }
 }

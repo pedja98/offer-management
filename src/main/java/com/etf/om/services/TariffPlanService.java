@@ -203,4 +203,14 @@ public class TariffPlanService {
                 .bodyToMono(PcTariffPlanDiscountDto.class)
                 .block();
     }
+
+    public TariffPlanGroupedByStatusDto getGroupedTariffPlansByCrmOfferId(Long crmOfferId) {
+        List<PrintTariffPlanDto> active = tariffPlanRepository.getActiveTariffPlansByCrmOfferId(crmOfferId);
+        List<PrintTariffPlanDto> deactivated = tariffPlanRepository.getDeactivatedTariffPlansByCrmOfferId(crmOfferId);
+
+        return TariffPlanGroupedByStatusDto.builder()
+                .activeTariffPlans(active)
+                .deactivatedTariffPlans(deactivated)
+                .build();
+    }
 }
