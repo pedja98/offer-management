@@ -16,6 +16,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.etf.om.common.OmConstants.ErrorCodes.OFFER_NOT_FOUND;
+import static com.etf.om.common.OmConstants.ErrorCodes.OFFER_STATUS_TRANSITION_NOT_POSSIBLE;
 import static com.etf.om.common.OmConstants.SuccessCodes.OFFER_CREATED;
 import static com.etf.om.common.OmConstants.SuccessCodes.OFFER_UPDATED;
 
@@ -70,6 +71,13 @@ public class OfferService {
 
             if (!allowedFields.contains(key)) {
                 throw new IllegalArgumentException("Field '" + key + "' is not allowed to be updated");
+            }
+
+            if (key.equals("status")
+                    && Arrays.stream(new OfferStatus[]{OfferStatus.L1_PENDING, OfferStatus.L2_PENDING})
+                    .anyMatch(status -> status.name().equals(value))
+                    && this.offerRepository.existsActiveOfferByOpportunityId(offer.getOpportunityId(), offer.getId())) {
+                throw new RuntimeException(OFFER_STATUS_TRANSITION_NOT_POSSIBLE);
             }
 
             try {

@@ -8,6 +8,7 @@ public class OmConstants {
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static final class ErrorCodes {
+        public static final String OFFER_STATUS_TRANSITION_NOT_POSSIBLE = "offerStatusTransitionNotPossible";
         public static final String OFFER_NOT_FOUND = "offerNotFound";
         public static final String ADDON_NOT_FOUND = "addonNotFound";
         public static final String DISCOUNT_NOT_FOUND = "discountNotFound";

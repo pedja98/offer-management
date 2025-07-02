@@ -4,6 +4,7 @@ import com.etf.om.dtos.OfferDto;
 import com.etf.om.entities.Offer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -31,4 +32,19 @@ public interface OfferRepository extends JpaRepository<Offer, UUID> {
                          o.approvalLevel, o.companyId, o.opportunityId, o.crmOfferId ,o.createdByUsername, o.modifiedByUsername, o.dateCreated, o.dateModified)
             FROM Offer o""")
     List<OfferDto> findAllOfferDto();
+
+    @Query("""
+                SELECT COUNT(o) > 0
+                FROM Offer o
+                WHERE o.opportunityId = :opportunityId
+                  AND o.id <> :offerId
+                  AND o.status IN (
+                    com.etf.om.enums.OfferStatus.L1_PENDING,
+                    com.etf.om.enums.OfferStatus.L2_PENDING,
+                    com.etf.om.enums.OfferStatus.CUSTOMER_ACCEPTED,
+                    com.etf.om.enums.OfferStatus.OFFER_APPROVED,
+                    com.etf.om.enums.OfferStatus.CONCLUDED
+                  )
+            """)
+    boolean existsActiveOfferByOpportunityId(@Param("opportunityId") Long opportunityId, @Param("offerId") UUID offerId);
 }
