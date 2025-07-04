@@ -19,8 +19,13 @@ public interface TariffPlanDiscountRepository extends JpaRepository<TariffPlanDi
 
     @Modifying
     @Transactional
-    @Query("DELETE FROM TariffPlanDiscount tpd WHERE tpd.tariffPlanIdentifier = :identifier")
-    void deleteByTariffPlanIdentifier(@org.springframework.data.repository.query.Param("identifier") String identifier);
+    @Query("DELETE FROM TariffPlanDiscount tpd WHERE tpd.tariffPlanIdentifier = :identifier and tpd.offer.id = :offerId")
+    void deleteByTariffPlanIdentifierAndOfferId(@org.springframework.data.repository.query.Param("identifier") String identifier, @Param("offerId") UUID offerId);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM TariffPlanDiscount tpd WHERE tpd.offer.id = :offerId")
+    void deleteByOfferId(@Param("offerId") UUID offerId);
 
     TariffPlanDiscount findByTariffPlanIdentifierAndOfferId(String tariffPlanIdentifier, UUID offer_id);
 

@@ -18,8 +18,7 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.etf.om.common.OmConstants.ErrorCodes.TARIFF_PLAN_NOT_FOUND;
-import static com.etf.om.common.OmConstants.ErrorCodes.OFFER_NOT_FOUND;
+import static com.etf.om.common.OmConstants.ErrorCodes.*;
 import static com.etf.om.common.OmConstants.SuccessCodes.*;
 
 @Service
@@ -96,7 +95,7 @@ public class TariffPlanService {
         }
         this.removeConnectedEntities(offerId, tpIdentifiersBeforeChange);
         this.formatDiscountConnectedToTariffPlan(offerId);
-        if (this.tariffPlanRepository.countActivatedTariffPlans() == 0) {
+        if (this.tariffPlanRepository.countActivatedTariffPlansOnOffer(offerId) == 0) {
             Offer offer = offerRepository.findById(offerId).orElseThrow(() -> new RuntimeException(OFFER_NOT_FOUND));
             offer.setApprovalLevel(null);
             this.offerRepository.save(offer);
@@ -115,7 +114,7 @@ public class TariffPlanService {
     }
 
     public Map<String, Map<String, Object>> getTariffPlanCountsWithNames(UUID offerId) {
-        List<IdentifierCountNameDto> data = this.tariffPlanRepository.countTariffPlansByIdentifierWithName(offerId);
+        List<IdentifierCountNameDto> data = this.tariffPlanRepository.countTariffPlansByIdentifierWithNameOnOffer(offerId);
 
         return data.stream().collect(Collectors.toMap(
                 IdentifierCountNameDto::getIdentifier,
@@ -139,8 +138,10 @@ public class TariffPlanService {
     }
 
     private void formatDiscountConnectedToTariffPlan(UUID omOfferId) {
-        List<IdentifierCountDto> counts = this.tariffPlanRepository.countTariffPlansGroupedByPreferredIdentifier();
-
+        List<IdentifierCountDto> counts = this.tariffPlanRepository.countTariffPlansGroupedByPreferredIdentifierOnOffer(omOfferId);
+        if (counts.isEmpty()) {
+            this.tariffPlanDiscountsRepository.deleteByOfferId(omOfferId);
+        }
         for (IdentifierCountDto count : counts) {
             String identifier = count.getIdentifier();
             int amount = count.getCount().intValue();
@@ -169,7 +170,7 @@ public class TariffPlanService {
                         this.tariffPlanDiscountsRepository.save(existingDiscount);
                     } else {
                         Offer offer = offerRepository.findById(omOfferId)
-                                .orElseThrow(() -> new IllegalArgumentException("Offer not found"));
+                                .orElseThrow(() -> new IllegalArgumentException(OFFER_NOT_FOUND));
 
                         TariffPlanDiscount newDiscount = TariffPlanDiscount.builder()
                                 .tariffPlanIdentifier(identifier)
@@ -182,10 +183,10 @@ public class TariffPlanService {
                         this.tariffPlanDiscountsRepository.save(newDiscount);
                     }
                 } else {
-                    this.tariffPlanDiscountsRepository.deleteByTariffPlanIdentifier(identifier);
+                    this.tariffPlanDiscountsRepository.deleteByTariffPlanIdentifierAndOfferId(identifier, omOfferId);
                 }
             } catch (Exception e) {
-                System.err.println("Failed to process discount for identifier: " + identifier + " - " + e.getMessage());
+                throw new RuntimeException(INVALID_REQUEST);
             }
         }
     }

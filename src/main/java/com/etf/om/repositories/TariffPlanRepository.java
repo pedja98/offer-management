@@ -43,7 +43,7 @@ public interface TariffPlanRepository extends JpaRepository<TariffPlan, UUID> {
             WHERE tp.offer.id = :offerId AND tp.deactivate = false
             GROUP BY COALESCE(tp.actualTpIdentifier, tp.plannedTpIdentifier), COALESCE(tp.actualTpName, tp.plannedTpName)
             """)
-    List<IdentifierCountNameDto> countTariffPlansByIdentifierWithName(@Param("offerId") UUID offerId);
+    List<IdentifierCountNameDto> countTariffPlansByIdentifierWithNameOnOffer(@Param("offerId") UUID offerId);
 
     @Query("""
             SELECT new com.etf.om.dtos.IdentifierCountDto(
@@ -51,13 +51,13 @@ public interface TariffPlanRepository extends JpaRepository<TariffPlan, UUID> {
                 COUNT(tp)
             )
             FROM TariffPlan tp
-            WHERE tp.deactivate = false
+            WHERE tp.deactivate = false and tp.offer.id = :omOfferId
             GROUP BY COALESCE(tp.actualTpIdentifier, tp.plannedTpIdentifier)
             """)
-    List<IdentifierCountDto> countTariffPlansGroupedByPreferredIdentifier();
+    List<IdentifierCountDto> countTariffPlansGroupedByPreferredIdentifierOnOffer(@Param("omOfferId") UUID omOfferId);
 
-    @Query("SELECT COUNT(tp) FROM TariffPlan tp WHERE tp.deactivate = false ")
-    long countActivatedTariffPlans();
+    @Query("SELECT COUNT(tp) FROM TariffPlan tp WHERE tp.deactivate = false and tp.offer.id = :omOfferId")
+    long countActivatedTariffPlansOnOffer(@Param("omOfferId") UUID omOfferId);
 
     @Query("""
             SELECT new com.etf.om.dtos.PrintTariffPlanDto(
