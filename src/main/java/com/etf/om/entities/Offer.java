@@ -2,6 +2,7 @@ package com.etf.om.entities;
 
 import com.etf.om.enums.OfferApprovalLevels;
 import com.etf.om.enums.OfferStatus;
+import com.etf.om.enums.OpportunityType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,6 +33,10 @@ public class Offer {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private OfferStatus status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 15,  name = "opportunity_type")
+    private OpportunityType opportunityType;
 
     @OneToMany(mappedBy = "offer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TariffPlan> tariffPlans;

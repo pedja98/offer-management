@@ -1,5 +1,6 @@
 package com.etf.om.dtos;
 
+import com.etf.om.enums.OpportunityType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,4 +15,5 @@ public class CreateOfferDto {
     private Long crmOfferId;
     private Long companyId;
     private Long opportunityId;
+    private OpportunityType opportunityType;
 }

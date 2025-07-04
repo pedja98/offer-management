@@ -2,6 +2,7 @@ package com.etf.om.dtos;
 
 import com.etf.om.enums.OfferApprovalLevels;
 import com.etf.om.enums.OfferStatus;
+import com.etf.om.enums.OpportunityType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,7 @@ import java.util.UUID;
 public class OfferDto {
     private UUID id;
     private String name;
+    private OpportunityType opportunityType;
     private Integer contractObligation;
     private OfferStatus status;
     private String approvalDescription;
