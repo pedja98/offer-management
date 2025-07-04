@@ -31,6 +31,7 @@ public class OfferService {
         Offer offer = Offer.builder()
                 .name(body.getName())
                 .opportunityType(body.getOpportunityType())
+                .opportunityName(body.getOpportunityName())
                 .opportunityId(body.getOpportunityId())
                 .companyId(body.getCompanyId())
                 .crmOfferId(body.getCrmOfferId())

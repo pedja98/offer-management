@@ -34,6 +34,9 @@ public class Offer {
     @Column(nullable = false, length = 20)
     private OfferStatus status;
 
+    @Column(nullable = false,  name = "opportunity_name")
+    private String opportunityName;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 15,  name = "opportunity_type")
     private OpportunityType opportunityType;

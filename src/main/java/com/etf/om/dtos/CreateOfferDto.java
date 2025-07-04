@@ -16,4 +16,5 @@ public class CreateOfferDto {
     private Long companyId;
     private Long opportunityId;
     private OpportunityType opportunityType;
+    private String opportunityName;
 }

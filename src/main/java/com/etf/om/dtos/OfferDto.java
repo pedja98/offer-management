@@ -18,6 +18,7 @@ import java.util.UUID;
 public class OfferDto {
     private UUID id;
     private String name;
+    private String opportunityName;
     private OpportunityType opportunityType;
     private Integer contractObligation;
     private OfferStatus status;
