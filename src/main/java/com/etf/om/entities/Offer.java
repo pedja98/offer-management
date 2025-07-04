@@ -36,9 +36,6 @@ public class Offer {
     @OneToMany(mappedBy = "offer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TariffPlan> tariffPlans;
 
-    @Column(nullable = false)
-    private Integer mmc = 0;
-
     @Column(nullable = false, name = "contract_obligation")
     private Integer contractObligation = 0;
 

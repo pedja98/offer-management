@@ -208,9 +208,24 @@ public class TariffPlanService {
         List<PrintTariffPlanDto> active = tariffPlanRepository.getActiveTariffPlansByCrmOfferId(crmOfferId);
         List<PrintTariffPlanDto> deactivated = tariffPlanRepository.getDeactivatedTariffPlansByCrmOfferId(crmOfferId);
 
+        Offer offer = this.offerRepository.findOfferByCrmOfferId(crmOfferId);
+
+        Map<String, List<AddonDto>> activeTariffPlansWithAddons = new HashMap<>();
+        Map<String, BigDecimal> activeDiscounts = new HashMap<>();
+
+        for (PrintTariffPlanDto activeTp : active) {
+            List<AddonDto> relatedAddons = this.addonRepository.findAllAddonDtosByOfferIdAndTariffPlanIdentifier(offer.getId(), activeTp.getIdentifier());
+            activeTariffPlansWithAddons.put(activeTp.getIdentifier(), relatedAddons);
+
+            TariffPlanDiscountDto discount = this.tariffPlanDiscountsRepository.findTariffPlanDiscountByOfferIdAndTariffPlanIdentifier(offer.getId(), activeTp.getIdentifier());
+            activeDiscounts.put(activeTp.getIdentifier(), discount != null ? discount.getInitialDiscount().add(discount.getAdditionalDiscount()) : BigDecimal.ZERO);
+        }
+
         return TariffPlanGroupedByStatusDto.builder()
                 .activeTariffPlans(active)
                 .deactivatedTariffPlans(deactivated)
+                .activeTariffPlansAddons(activeTariffPlansWithAddons)
+                .activeDiscounts(activeDiscounts)
                 .build();
     }
 }

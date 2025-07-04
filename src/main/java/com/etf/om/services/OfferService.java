@@ -33,7 +33,6 @@ public class OfferService {
                 .opportunityId(body.getOpportunityId())
                 .companyId(body.getCompanyId())
                 .crmOfferId(body.getCrmOfferId())
-                .mmc(0)
                 .contractObligation(0)
                 .status(OfferStatus.DRAFT)
                 .createdByUsername(SetCurrentUserFilter.getCurrentUsername())
