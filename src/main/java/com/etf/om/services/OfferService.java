@@ -119,4 +119,10 @@ public class OfferService {
         this.offerRepository.save(offer);
         return OFFER_UPDATED;
     }
+
+    @Transactional
+    public String updateOfferStatusByOpportunityId(Long opportunityId) {
+        this.offerRepository.updateOfferStatusAndModifiedByOpportunityId(opportunityId, OfferStatus.SALESMEN_CLOSED, SetCurrentUserFilter.getCurrentUsername());
+        return OFFER_UPDATED;
+    }
 }

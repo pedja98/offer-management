@@ -52,4 +52,11 @@ public class OfferController {
     ) {
         return ResponseEntity.ok(new MessageResponse(offerService.changeOfferStatus(crmOfferId, body)));
     }
+
+    @PatchMapping("/opportunity/{opportunityId}/offers/close")
+    public ResponseEntity<MessageResponse> updateOfferStatusByOpportunityId(
+            @PathVariable Long opportunityId
+    ) {
+        return ResponseEntity.ok(new MessageResponse(offerService.updateOfferStatusByOpportunityId(opportunityId)));
+    }
 }
