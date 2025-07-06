@@ -45,7 +45,7 @@ public class Offer {
     private List<TariffPlan> tariffPlans;
 
     @Column(nullable = false, name = "contract_obligation")
-    private Integer contractObligation = 0;
+    private Integer contractObligation;
 
     @Column(name = "approval_description", columnDefinition = "TEXT")
     private String approvalDescription;

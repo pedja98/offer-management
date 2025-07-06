@@ -17,4 +17,5 @@ public class CreateOfferDto {
     private Long opportunityId;
     private OpportunityType opportunityType;
     private String opportunityName;
+    private Integer contractObligation;
 }

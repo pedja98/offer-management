@@ -38,15 +38,14 @@ public class OfferService {
     @Transactional
     public String createOffer(CreateOfferDto body) {
         String currentUsername = SetCurrentUserFilter.getCurrentUsername();
-
         Offer offer = Offer.builder()
                 .name(body.getName())
                 .opportunityType(body.getOpportunityType())
                 .opportunityName(body.getOpportunityName())
                 .opportunityId(body.getOpportunityId())
                 .companyId(body.getCompanyId())
+                .contractObligation(body.getContractObligation())
                 .crmOfferId(body.getCrmOfferId())
-                .contractObligation(0)
                 .status(OfferStatus.DRAFT)
                 .createdByUsername(currentUsername)
                 .build();
