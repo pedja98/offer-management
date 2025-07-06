@@ -8,6 +8,8 @@ public class OmConstants {
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static final class ErrorCodes {
+        public static final String ACTION_NOT_ALLOWED = "actionNotAllowed";
+        public static final String CAN_NOT_DELETE_PLANNED_TP = "canNotDeletePlannedTp";
         public static final String INVALID_REQUEST = "invalidRequest";
         public static final String OFFER_STATUS_TRANSITION_NOT_POSSIBLE = "offerStatusTransitionNotPossible";
         public static final String OFFER_NOT_FOUND = "offerNotFound";

@@ -61,8 +61,8 @@ public interface OfferRepository extends JpaRepository<Offer, UUID> {
                 WHERE o.opportunityId = :opportunityId
             """)
     void updateOfferStatusAndModifiedByOpportunityId(@Param("opportunityId") Long opportunityId,
-                                                    @Param("offerStatus") OfferStatus offerStatus,
-                                                    @Param("modifiedByUsername") String modifiedByUsername);
+                                                     @Param("offerStatus") OfferStatus offerStatus,
+                                                     @Param("modifiedByUsername") String modifiedByUsername);
 
-
+    Optional<Offer> findFirstByCompanyIdAndStatusOrderByDateModifiedDesc(Long companyId, OfferStatus status);
 }

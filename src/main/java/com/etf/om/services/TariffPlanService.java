@@ -4,6 +4,9 @@ import com.etf.om.dtos.*;
 import com.etf.om.entities.Offer;
 import com.etf.om.entities.TariffPlan;
 import com.etf.om.entities.TariffPlanDiscount;
+import com.etf.om.enums.OfferStatus;
+import com.etf.om.enums.OpportunityType;
+import com.etf.om.exceptions.BadRequestException;
 import com.etf.om.exceptions.ItemNotFoundException;
 import com.etf.om.filters.SetCurrentUserFilter;
 import com.etf.om.repositories.AddonRepository;
@@ -47,6 +50,10 @@ public class TariffPlanService {
         Offer offer = offerRepository.findById(body.getOmOfferId())
                 .orElseThrow(() -> new RuntimeException(OFFER_NOT_FOUND));
 
+        if (offer.getOpportunityType().equals(OpportunityType.TERMINATION) || !offer.getStatus().equals(OfferStatus.DRAFT)) {
+            throw new BadRequestException(ACTION_NOT_ALLOWED);
+        }
+
         String username = SetCurrentUserFilter.getCurrentUsername();
 
         for (int i = 0; i < body.getNumberOfItems(); i++) {
@@ -58,7 +65,7 @@ public class TariffPlanService {
                     .deactivate(false)
                     .createdByUser(username)
                     .build();
-            UUID tpId = this.tariffPlanRepository.save(tariffPlan).getId();
+            this.tariffPlanRepository.save(tariffPlan);
         }
         this.formatDiscountConnectedToTariffPlan(body.getOmOfferId());
         return ADD_TARIFF_PLANS;
@@ -70,6 +77,13 @@ public class TariffPlanService {
 
     @Transactional
     public String updateBulkTariffPlans(UpdateTariffPlansDto body, UUID offerId) {
+        Offer offer = offerRepository.findById(offerId)
+                .orElseThrow(() -> new RuntimeException(OFFER_NOT_FOUND));
+
+        if (offer.getOpportunityType().equals(OpportunityType.TERMINATION) || !offer.getStatus().equals(OfferStatus.DRAFT)) {
+            throw new BadRequestException(ACTION_NOT_ALLOWED);
+        }
+
         List<String> tpIdentifiersBeforeChange = this.tariffPlanRepository.findAllDistinctPreferredIdentifiers(offerId);
         for (UUID uuid : body.uuids) {
             TariffPlan tariffPlan = tariffPlanRepository.findById(uuid)
@@ -87,7 +101,21 @@ public class TariffPlanService {
 
     @Transactional
     public String deleteBulkTariffPlans(List<UUID> tpIds, UUID offerId) {
+        Offer offer = offerRepository.findById(offerId)
+                .orElseThrow(() -> new RuntimeException(OFFER_NOT_FOUND));
+
+        if (offer.getOpportunityType().equals(OpportunityType.TERMINATION) || !offer.getStatus().equals(OfferStatus.DRAFT)) {
+            throw new BadRequestException(ACTION_NOT_ALLOWED);
+        }
+
         List<String> tpIdentifiersBeforeChange = this.tariffPlanRepository.findAllDistinctPreferredIdentifiers(offerId);
+        for (UUID uuid : tpIds) {
+            TariffPlan tariffPlan = tariffPlanRepository.findById(uuid)
+                    .orElseThrow(() -> new RuntimeException(TARIFF_PLAN_NOT_FOUND));
+            if (tariffPlan.getPlannedTpIdentifier() != null && !tariffPlan.getPlannedTpIdentifier().isEmpty()) {
+                throw new BadRequestException(CAN_NOT_DELETE_PLANNED_TP);
+            }
+        }
         for (UUID uuid : tpIds) {
             TariffPlan tariffPlan = tariffPlanRepository.findById(uuid)
                     .orElseThrow(() -> new RuntimeException(TARIFF_PLAN_NOT_FOUND));
@@ -96,7 +124,6 @@ public class TariffPlanService {
         this.removeConnectedEntities(offerId, tpIdentifiersBeforeChange);
         this.formatDiscountConnectedToTariffPlan(offerId);
         if (this.tariffPlanRepository.countActivatedTariffPlansOnOffer(offerId) == 0) {
-            Offer offer = offerRepository.findById(offerId).orElseThrow(() -> new RuntimeException(OFFER_NOT_FOUND));
             offer.setApprovalLevel(null);
             this.offerRepository.save(offer);
         }
@@ -105,6 +132,13 @@ public class TariffPlanService {
 
     @Transactional
     public String deactivateOfferTariffPlan(UUID id, DeactivateTariffPlanDto body) {
+        Offer offer = offerRepository.findById(body.getOmOfferId())
+                .orElseThrow(() -> new RuntimeException(OFFER_NOT_FOUND));
+
+        if (offer.getOpportunityType().equals(OpportunityType.TERMINATION) || !offer.getStatus().equals(OfferStatus.DRAFT)) {
+            throw new BadRequestException(ACTION_NOT_ALLOWED);
+        }
+
         List<String> tpIdentifiersBeforeChange = this.tariffPlanRepository.findAllDistinctPreferredIdentifiers(body.getOmOfferId());
         TariffPlan tariffPlan = this.tariffPlanRepository.findById(id).orElseThrow(() -> new ItemNotFoundException(TARIFF_PLAN_NOT_FOUND));
         tariffPlan.setDeactivate(body.getDeactivate());
@@ -137,7 +171,7 @@ public class TariffPlanService {
         this.tariffPlanDiscountsRepository.deleteAllByTariffPlanIdentifierIn(tpIdentifiers);
     }
 
-    private void formatDiscountConnectedToTariffPlan(UUID omOfferId) {
+    public void formatDiscountConnectedToTariffPlan(UUID omOfferId) {
         List<IdentifierCountDto> counts = this.tariffPlanRepository.countTariffPlansGroupedByPreferredIdentifierOnOffer(omOfferId);
         if (counts.isEmpty()) {
             this.tariffPlanDiscountsRepository.deleteByOfferId(omOfferId);

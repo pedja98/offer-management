@@ -41,10 +41,10 @@ public class TariffPlan {
     @Column(columnDefinition = "VARCHAR", length = 255, name = "actual_tp_name")
     private Map<String, String> actualTpName;
 
-    @Column(nullable = false, length = 30, name = "actual_tp_identifier")
+    @Column(length = 30, name = "actual_tp_identifier")
     private String actualTpIdentifier;
 
-    @Column(nullable = false, name = "actual_tp_price")
+    @Column(name = "actual_tp_price")
     private BigDecimal actualTpPrice;
 
     @Column()

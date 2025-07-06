@@ -4,10 +4,13 @@ import com.etf.om.dtos.ChangeOfferStatusDto;
 import com.etf.om.dtos.CreateOfferDto;
 import com.etf.om.dtos.OfferDto;
 import com.etf.om.entities.Offer;
+import com.etf.om.entities.TariffPlan;
 import com.etf.om.enums.OfferStatus;
+import com.etf.om.enums.OpportunityType;
 import com.etf.om.exceptions.ItemNotFoundException;
 import com.etf.om.filters.SetCurrentUserFilter;
 import com.etf.om.repositories.OfferRepository;
+import com.etf.om.repositories.TariffPlanRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,8 +29,16 @@ public class OfferService {
     @Autowired
     private OfferRepository offerRepository;
 
+    @Autowired
+    private TariffPlanRepository tariffPlanRepository;
+
+    @Autowired
+    private TariffPlanService tariffPlanService;
+
     @Transactional
     public String createOffer(CreateOfferDto body) {
+        String currentUsername = SetCurrentUserFilter.getCurrentUsername();
+
         Offer offer = Offer.builder()
                 .name(body.getName())
                 .opportunityType(body.getOpportunityType())
@@ -37,10 +48,34 @@ public class OfferService {
                 .crmOfferId(body.getCrmOfferId())
                 .contractObligation(0)
                 .status(OfferStatus.DRAFT)
-                .createdByUsername(SetCurrentUserFilter.getCurrentUsername())
+                .createdByUsername(currentUsername)
                 .build();
 
-        this.offerRepository.save(offer);
+        Offer savedOffer = this.offerRepository.save(offer);
+
+        if (!body.getOpportunityType().equals(OpportunityType.ACQUISITION)) {
+            Offer activeOffer = offerRepository.findFirstByCompanyIdAndStatusOrderByDateModifiedDesc(savedOffer.getCompanyId(), OfferStatus.CONCLUDED)
+                    .orElseThrow(() -> new ItemNotFoundException(OFFER_NOT_FOUND));
+            List<TariffPlan> activeTariffPlans = activeOffer.getTariffPlans();
+
+            for (TariffPlan activeTariffPlan : activeTariffPlans) {
+                if (activeTariffPlan.getDeactivate()) {
+                    continue;
+                }
+                TariffPlan tariffPlan = TariffPlan.builder()
+                        .plannedTpIdentifier(activeTariffPlan.getActualTpIdentifier())
+                        .plannedTpName(activeTariffPlan.getActualTpName())
+                        .plannedTpPrice(activeTariffPlan.getActualTpPrice())
+                        .offer(savedOffer)
+                        .deactivate(body.getOpportunityType().equals(OpportunityType.TERMINATION))
+                        .createdByUser(currentUsername)
+                        .build();
+                this.tariffPlanRepository.save(tariffPlan);
+            }
+
+            this.tariffPlanService.formatDiscountConnectedToTariffPlan(savedOffer.getId());
+        }
+
         return OFFER_CREATED;
     }
 
