@@ -74,14 +74,14 @@ public interface TariffPlanRepository extends JpaRepository<TariffPlan, UUID> {
 
     @Query("""
             SELECT new com.etf.om.dtos.PrintTariffPlanDto(
-                COALESCE(tp.actualTpName, tp.plannedTpName),
-                COALESCE(tp.actualTpIdentifier, tp.plannedTpIdentifier),
-                COALESCE(tp.actualTpPrice, tp.plannedTpPrice),
-                COUNT(tp)
+               tp.plannedTpName,
+               tp.plannedTpIdentifier,
+               tp.plannedTpPrice,
+               COUNT(tp)
             )
             FROM TariffPlan tp
             WHERE tp.offer.crmOfferId = :crmOfferId AND tp.deactivate = true
-            GROUP BY COALESCE(tp.actualTpName, tp.plannedTpName), COALESCE(tp.actualTpIdentifier, tp.plannedTpIdentifier), COALESCE(tp.actualTpPrice, tp.plannedTpPrice)
+            GROUP BY tp.plannedTpName, tp.plannedTpIdentifier, tp.plannedTpPrice
             """)
     List<PrintTariffPlanDto> getDeactivatedTariffPlansByCrmOfferId(@Param("crmOfferId") Long crmOfferId);
 }
